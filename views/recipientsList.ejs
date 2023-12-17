@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor List</title>
+    <title>recipients List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,30 +37,38 @@
 
     <div style="margin-bottom: 30px;">
         <h1 style="display: inline;">Recipients List</h1>
-        <a href="recipientAdding.html" style="margin-left: 50px;">Add a new Recipient</a>
+        
     </div>
 
 
 
-    <div id="search-container">
-        <label for="search-input">Search:</label>
-        <input type="text" id="search-input" placeholder="Enter recipient name">
-        <button onclick="search()">Go</button>
-    </div>
+   
     
-    <ul>
-        <li><a href="#">John Doe</a></li>
-        <li><a href="#">Jane Smith</a></li>
-        <li><a href="#">David Johnson</a></li>
-        <!-- Add more donor names as needed -->
-    </ul>
+    <% if (recipients && recipients.length > 0) { %>
+        <ul>
+            <% recipients.forEach(innerArray => { %>
+                <% innerArray.forEach(user => { %>
+                    <li>
+                        Username: <%= user.Username %>,
+                        ID: <%= user.Id %>,
+                        First Name: <%= user.Fname %>,
+                        Last Name: <%= user.Lname %>,
+                        Phone: <%= user.Phone %>,
+                        Address: <%= user.Address %>,
+                        Birthdate: <%= user.Bdate %>,
+                        Email: <%= user.Email %>,
+                        Sex: <%= user.Sex %>,
+                        Blood Type: <%= user.Blood_type %>
+                    </li>
+                    <hr>
+                <% }); %>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No data available.</p>
+    <% } %>
 
 
-    <script>
-        function search() {
-            // Implement search logic here
-            alert('Searching...'); // Replace this with your search functionality
-        }
-    </script>
+    
 </body>
 </html>

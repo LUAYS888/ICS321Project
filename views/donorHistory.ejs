@@ -45,20 +45,39 @@
     
     <h1>History: </h1>
     
-    <% history.forEach(innerArray => { %>
-        <% innerArray.forEach(rowData => { %>
-            <% if (rowData) { %>
-                <p>
-                    Staff id: <%= rowData.Sid %>,
-                    Status: <%= rowData.Rstatus %>,
-                    Date: <%= rowData.prefDate %>
-                </p>
-            <% } else { %>
-                <!-- Handle the case where rowData is undefined -->
-                <p>Undefined RowDataPacket</p>
-            <% } %>
+    <% if (history && history.length > 0) { %>
+        <% history.forEach(innerArray => { %>
+            <% innerArray.forEach(item => { %>
+                <% if (item.emergency) { %>
+                    <p>
+                        Sid: <%= item.Sid %>,
+                        Rid: <%= item.Rid %>,
+                        Blood Type: <%= item.Blood_type %>,
+                        Request Status: <%= item.Rstatus %>,
+                        Emergency: <%= item.emergency %>,
+                        Paid: <%= item.Paid %>
+                    </p>
+                <% } else { %>
+                    <% history.forEach(innerArray => { %>
+                        <% innerArray.forEach(rowData => { %>
+                            <% if (rowData) { %>
+                                <p>
+                                    Staff id: <%= rowData.Sid %>,
+                                    Status: <%= rowData.Rstatus %>,
+                                    Date: <%= rowData.prefDate %>
+                                </p>
+                            <% } else { %>
+                                <!-- Handle the case where rowData is undefined -->
+                                <p>Undefined RowDataPacket</p>
+                            <% } %>
+                        <% }); %>
+                    <% }); %>
+                <% } %>
+            <% }); %>
         <% }); %>
-    <% }); %>
+    <% } else { %>
+        <p>No History</p>
+    <% } %>
 
 
     

@@ -133,9 +133,9 @@ app.post('/login', (req,res) =>{
             if (results.length > 0) {
               // Login successful
               //req.session.user = results[0].Username;
-              console.log(results)
-              console.log(results[0])
-              console.log(results[0].Username)
+             // console.log(results)
+              //console.log(results[0])
+              //console.log(results[0].Username)
              // res.send(results) //[{"Username":"L8","Dpassword":"1234","Id":"1010555555"}]
              //res.send(results[0].Username)  //L8
             // res.send(results[0])   //{"Username":"L8","Dpassword":"1234","Id":"1010555555"}
@@ -156,9 +156,12 @@ app.post('/login', (req,res) =>{
 
     }else if (userType === "Recipient"){
 
-        const query = `SELECT * FROM r_accounts WHERE Username = ? AND Rpassword = ?`;
+      const advQuery= `SELECT * FROM r_accounts
+      JOIN person ON r_accounts.Id = person.Id
+      JOIN recipient ON r_accounts.Id = recipient.Id
+       WHERE r_accounts.Username = ? AND r_accounts.Rpassword = ?;`
 
-        db.query(query, [username, password], (err, results) => {
+        db.query(advQuery, [username, password], (err, results) => {
             if (err) {
               console.error('Error executing query:', err);
               res.status(500).json({ error: 'Internal Server Error' });
@@ -167,9 +170,10 @@ app.post('/login', (req,res) =>{
         
             if (results.length > 0) {
               // Login successful
-              req.session.user = results[0].Username;
-              res.sendFile(path.join(__dirname, '/donorHome.html'));
-              //res.json({ success: true, message: 'Login successful' });
+              req.session.user = results[0];
+              
+              res.render("donorHome")
+              
             } else {
               // Login failed
               res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -196,7 +200,237 @@ app.post('/login', (req,res) =>{
 
 })
 
-app.get('/requestsList', (req,res)=>{
+app.get('/requestBloodForm', (req,res)=>{                      //For the recipent
+  if (req.session.user) {
+    res.render("requestBloodForm",req.session.user )
+  }else
+  res.send("Not logged in")
+})
+
+
+app.post('/requestBloodForm', (req,res)=>{                      //For the recipent
+  if (req.session.user) {
+    let id = req.session.user.Id
+    let bloodType = req.session.user.Blood_type
+    let emergency= req.body.emergency
+
+    const sql = 'INSERT INTO r_request (Sid,Rid, Blood_type, Rstatus,emergency,Paid) VALUES (?,?, ?, ?,?,?)';
+
+    db.query(sql, [1, id, bloodType,"Pending",emergency,"No"], (err, result) => {
+        if (err) {
+            console.error('Error inserting data into profilerequests table:', err);
+            // Handle the error, send a response, etc.
+        } else {
+           res.send('We recieved your request.');
+            // Process or send a response as needed
+        }
+    });
+
+  }else
+  res.send("Not logged in")
+})
+
+app.get('/requestsFromRec', (req,res)=>{                      //For the admin from rec
+  if (req.session.user) {
+    let reqResult = []
+    
+
+    const query= `SELECT * FROM r_request `
+    
+
+    db.query(query,  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+        
+       
+        reqResult.push(results)
+        console.log(reqResult)
+         res.render('requestsFromRec',  {reqResult} ); 
+        //pendedResult=results
+        //console.log(pendedResult)
+        // res.render("donorHome")
+      } else {
+        // Login failed
+        res.status(401).json({ success: false, message: 'ErrorInPen' });
+      }
+    });
+
+   
+  }else
+  res.send("Not logged in")
+})
+
+
+app.get('/markAsRejectedRec', (req,res)=>{                      //For the admin to reject rec req
+  if (req.session.user) {
+    res.render("markAsRejectedRec",req.session.user )
+  }else
+  res.send("Not logged in")
+})
+
+app.post('/markAsRejectedRec', (req,res)=>{                      //For the admin to reject rec req
+  if (req.session.user) {
+    let id = req.body.Id
+    const sql = 'UPDATE r_request SET Rstatus = ? WHERE Rid = ?';
+
+    db.query(sql,['Rejected', id], (err, result) => {
+      if (err) {
+          console.error('Error updating data in person table:', err);
+          // Handle the error, send a response, etc.
+      } else {
+          res.send(`Request rejected successfully`);
+          // Process or send a response as needed
+      }
+  });
+  }else
+  res.send("Not logged in")
+})
+
+
+app.get('/markAsCompletedRec', (req,res)=>{                      //For the admin to accept rec req
+  if (req.session.user) {
+    res.render("markAsCompletedRec",req.session.user )
+  }else
+  res.send("Not logged in")
+})
+
+app.post('/markAsCompletedRec', (req,res)=>{                      //For the admin to accept rec req
+  if (req.session.user) {
+    let id = req.body.Id
+    
+ const sql = 'SELECT Blood_type FROM recipient WHERE Id = ?';
+      db.query(sql, [id], (err, result) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                // Handle the error, send a response, etc.
+            } else {
+                if (result.length > 0) {
+                  
+                    const bloodType = result[0].Blood_type;
+                    
+
+                    const anotherSql = 'UPDATE blood SET  Bstatus=? WHERE Type=? AND Bstatus=? LIMIT 1';
+                    db.query(anotherSql, ["Sold",bloodType,"Available"], (err, result) => {
+                      if (err) {
+                          res.send('No enough blood of this type in the bank!');
+                          // Handle the error, send a response, etc.
+                      } else {
+                        const sql = 'UPDATE r_request SET Rstatus = ? WHERE Rid = ?';
+                        db.query(sql,['Completed', id], (err, result) => {
+                              if (err) {
+                                  console.error('Error updating data in r_request table:', err);
+                                  // Handle the error, send a response, etc.
+                              } else {
+                        
+                        
+                                      res.send("Status updated")
+                        
+                         }
+                          });
+                          // Process or send a response as needed
+                      }
+                       });
+
+
+
+                    // Process or send the blood type as needed
+                } else {
+                    console.log(`Cannot find blood `);
+                    // Handle the case where no record is found for the donor ID
+                }
+                   }
+                 });
+     
+  }else
+  res.send("Not logged in")
+})
+
+
+app.get('/bloods', (req,res)=>{                      //bloods,For the admin
+  if (req.session.user) {
+    let bloods = []
+    
+
+    const query= `SELECT * FROM blood `
+    
+
+    db.query(query,  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+       
+        bloods.push(results)
+         console.log(bloods)
+         res.render('bloods',  {bloods} ); 
+        
+      } else {
+        
+        // res.status(401).json({ success: false, message: 'ErrorInPen' });
+        res.send("No bloods")
+      }
+    });
+
+  }else
+  res.send("Not logged in")
+})
+
+app.get('/bloodAdding', (req,res)=>{                      //show the form to add a blood, for the admin
+  if (req.session.user) {
+    res.render("bloodAdding",req.session.user )
+
+  }else
+  res.send("Not logged in")
+})
+
+
+app.post('/bloodAdding', (req,res)=>{                      //submit the form to add a blood, for the admin
+  if (req.session.user) {
+    let type = req.body.bloodType
+    let bloodId = req.body.bloodId
+    let expirationDate = req.body.expirationDate
+
+
+
+    const sql = 'INSERT INTO blood (Type,Bid, Expiration_date, BBid,Bstatus) VALUES (?,?, ?, ?, ?)';
+
+    db.query(sql, [type,bloodId,expirationDate,1,"Available"], (err, result) => {
+        if (err) {
+            console.error('Error inserting data into profilerequests table:', err);
+            res.send('Error! Try to choose another id');
+            // Handle the error, send a response, etc.
+        } else {
+           res.send('Blood Added!');
+            // Process or send a response as needed
+        }
+    });
+
+  }else
+  res.send("Not logged in")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/requestsList', (req,res)=>{                      //For the admin from donors. 
   if (req.session.user) {
     let pendedResult = []
     let completedResult = []
@@ -212,18 +446,8 @@ app.get('/requestsList', (req,res)=>{
       }
   
       if (results.length > 0) {
-        // Login successful
-        //req.session.user = results[0].Username;
-        // console.log(results)
-        // console.log(results[0])
-        // console.log(results[0].Username)
-       // res.send(results) //[{"Username":"L8","Dpassword":"1234","Id":"1010555555"}]
-       //res.send(results[0].Username)  //L8
-      // res.send(results[0])   //{"Username":"L8","Dpassword":"1234","Id":"1010555555"}
-        //res.sendFile(path.join(__dirname, '/donorHome.html'));
-        //res.json({ success: true, message: 'Login successful' });
-        // req.session.user = results[0];
-        // res.sendFile(path.join(__dirname, './views/donorHome.ejs'));
+        
+       
          pendedResult.push(results)
          res.render('requestsList',  {pendedResult} ); 
         //pendedResult=results
@@ -271,14 +495,200 @@ app.get('/requestsList', (req,res)=>{
   res.send("Not logged in")
 })
 
-app.get('/donorHistory', (req,res)=>{
+app.get('/notificationsList', (req,res)=>{                      //Requests to change prfile info,For the admin
+  if (req.session.user) {
+    let requests = []
+    
+
+    const query= `SELECT * FROM profilerequests `
+    
+
+    db.query(query,  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+       
+         requests.push(results)
+         console.log(requests)
+         res.render('notificationsList',  {requests} ); 
+        
+      } else {
+        
+        // res.status(401).json({ success: false, message: 'ErrorInPen' });
+        res.send("No Notifications")
+      }
+    });
+
+  }else
+  res.send("Not logged in")
+})
+
+app.get('/rejectProfileRequest', (req,res)=>{             //To reject profile requests. 
+  if (req.session.user) {
+    res.render('rejectProfileRequest',  req.session.user ); 
+      
+   
+  }else
+  res.send("Not logged in")
+})
+
+app.post('/rejectProfileRequest', (req,res)=>{
+  if (req.session.user) {
+    let id = req.body.Id
+    const sql = 'DELETE FROM profilerequests WHERE Id = ?';
+
+      db.query(sql, [id], (err, result) => {
+          if (err) {
+              console.error('Error deleting row from profilerequests:', err);
+              // Handle the error, send a response, etc.
+          } else {
+              res.send(`request deleted successfully `);
+              // Process or send a response as needed
+         }
+});
+      
+   
+  }else
+  res.send("Not logged in")
+})
+
+
+
+app.get('/acceptProfileRequest', (req,res)=>{        //To accept profile requests. 
+  if (req.session.user) {
+    res.render('acceptProfileRequest',  req.session.user ); 
+      
+   
+  }else
+  res.send("Not logged in")
+})
+
+app.post('/acceptProfileRequest', (req,res)=>{
+  if (req.session.user) {
+    let id = req.body.Id
+    let userType = "Donor"
+
+    if(! req.session.user.Dpassword){
+      userType= "Recipient"
+    }
+    const sql = 'Select * FROM profilerequests WHERE Id = ?';
+
+    db.query(sql,[id],  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+
+        const sql = 'UPDATE person  SET Fname = ?, Sex = ?, Email = ? WHERE Id = ? ';
+
+        db.query(sql, [results[0].name, results[0].gender,results[0].email,id], (err, result) => {
+            if (err) {
+                console.error('Error inserting data into person table:', err);
+                // Handle the error, send a response, etc.
+            } else {
+                console.log('Data inserted successfully into the person table');
+                if (results[0].userType === "Donor"){
+                  const sql2 = 'UPDATE donor  SET Weight = ?, Blood_type = ? WHERE Id = ?';
+
+                  db.query(sql2, [results[0].weight, results[0].Blood_type, id], (err, result) => {
+                      if (err) {
+                          console.error('Error inserting data into donor table:', err);
+                          // Handle the error, send a response, etc.
+                      } else {
+                          //console.log('Data inserted successfully into the donor table');
+                          const sql3 = 'UPDATE d_accounts  SET Username = ? WHERE Id = ?';
+
+                          db.query(sql3, [results[0].username,id], (err, result) => {
+                              if (err) {
+                                  console.error('Error inserting data into person table:', err);
+                                  // Handle the error, send a response, etc.
+                              } else {
+                                res.send('Data Updated successfully ');
+                                const sql = 'DELETE FROM profilerequests WHERE Id = ?';
+
+                                db.query(sql, [id], (err, result) => {
+                                    if (err) {
+                                        console.error('Error deleting row from profilerequests:', err);
+                                        // Handle the error, send a response, etc.
+                                    } else {
+                                        //res.send(`request deleted successfully `);
+                                        // Process or send a response as needed
+                                   }
+                          });
+                              }
+                          });
+                      }
+                  });
+
+                }else if (results[0].userType === "Recipient"){
+                  const sql4 = 'UPDATE r_accounts  SET Username = ? WHERE Id = ?';
+
+                  db.query(sql4, [results[0].username,id], (err, result) => {
+                      if (err) {
+                          console.error('Error inserting data into person table:', err);
+                          // Handle the error, send a response, etc.
+                      } else {
+                          res.send('Data Updated successfully ');
+                          const sql = 'DELETE FROM profilerequests WHERE Id = ?';
+
+                            db.query(sql, [id], (err, result) => {
+                                if (err) {
+                                    console.error('Error deleting row from profilerequests:', err);
+                                    // Handle the error, send a response, etc.
+                                } else {
+                                    res.send(`request deleted successfully `);
+                                    // Process or send a response as needed
+                              }
+                      });
+                          
+                      }
+                  });
+                }else {
+                 res.send("Problem in the type!")
+                }
+            }
+        });
+       
+         
+        
+      } else {
+        // Login failed
+        res.status(401).json({ success: false, message: 'ErrorInRes' });
+      }
+    });
+      
+   
+  }else
+  res.send("Not logged in")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/donorHistory', (req,res)=>{             // donor & recipent History
   if (req.session.user) {
     let history = []
-    
+    if (req.session.user.Dpassword) {
+              
     
     const Query= `SELECT * FROM d_request WHERE Did = ?  `
 
-    db.query(Query,[req.session.user.Id, ],  (err, results) => {
+    db.query(Query,[req.session.user.Id],  (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -297,6 +707,34 @@ app.get('/donorHistory', (req,res)=>{
         res.status(401).json({ success: false, message: 'ErrorInPen' });
       }
     });
+      
+    }else{
+
+      
+    
+    const Query= `SELECT * FROM r_request WHERE Rid = ?  `
+
+    db.query(Query,[req.session.user.Id],  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+       
+        history.push(results)
+        console.log(history)
+        //console.log(history)
+         res.render('donorHistory',  {history} ); 
+        
+      } else {
+        // Login failed
+        res.status(401).json({ success: false, message: 'ErrorInPen' });
+      }
+    });
+
+    }
 
    
   }else
@@ -320,9 +758,10 @@ app.get('/bloodDrive', (req,res)=>{
       if (results.length > 0) {
        
         annoucements.push(results)
+        let announceWithCred= [req.session.user,annoucements]
         console.log("yes")
         //console.log(history)
-         res.render('bloodDrive',  {annoucements} ); 
+         res.render('bloodDrive',  {announceWithCred} ); 
         
       } else {
         // Login failed
@@ -336,9 +775,85 @@ app.get('/bloodDrive', (req,res)=>{
 })
 
 
-app.get("/donorsList", (req,res)=>{
-    res.sendFile(path.join(__dirname, '/donorsList.html'));
+app.get("/donorsList", (req,res)=>{               //Show donors to admin
+  if (req.session.user) {
+    let donors = []
+    
+    
+    const Query= `SELECT * FROM donor `
+    const advQuery= `SELECT * FROM d_accounts
+        JOIN person ON d_accounts.Id = person.Id
+        JOIN donor ON d_accounts.Id = donor.Id
+        ;`
+
+    db.query(advQuery,  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+       
+        donors.push(results)
+        console.log(donors)
+        //console.log(history)
+         res.render('donorsList',  {donors} ); 
+        
+      } else {
+        // Login failed
+        res.status(401).json({ success: false, message: 'donorsList' });
+      }
+    });
+
+   
+  }else
+  res.send("Not logged in")
 })
+
+
+app.get("/recipientsList", (req,res)=>{               //Show recipients to admin
+  if (req.session.user) {
+    let recipients = []
+    
+    
+    const Query= `SELECT * FROM donor `
+    const advQuery= `SELECT * FROM r_accounts
+        JOIN person ON r_accounts.Id = person.Id
+        JOIN recipient ON r_accounts.Id = recipient.Id
+        ;`
+
+    db.query(advQuery,  (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+       
+        recipients.push(results)
+        console.log(recipients)
+        //console.log(history)
+         res.render('recipientsList',  {recipients} ); 
+        
+      } else {
+        // Login failed
+        res.status(401).json({ success: false, message: 'recipientsList' });
+      }
+    });
+
+   
+  }else
+  res.send("Not logged in")
+})
+
+
+
+
+
+
+
 
 app.get("/fetchDonorsList",(req,res) => {
     const sql = 'SELECT * FROM d_accounts';
@@ -358,6 +873,48 @@ app.use("/personalInfo", function(req,res){
   if (req.session.user) {
 
     res.render("personalInfo", { user: req.session.user });
+  }else
+  res.send("Not logged in")
+})
+
+
+app.get("/changingPersonalInfoForm", function(req,res){
+  if (req.session.user) {
+
+    res.render("changingPersonalInfoForm", { user: req.session.user });
+  }else
+  res.send("Not logged in")
+})
+
+app.post("/changingPersonalInfoForm", function(req,res){
+  if (req.session.user) {
+    let Id = req.session.user.Id
+    const name= req.body.name
+    const username= req.body.username
+    const email = req.body.email;
+    const gender= req.body.gender
+    const weight= req.body.weight
+    const bloodType = req.body.bloodType
+    let userType = "Donor"
+
+    if(! req.session.user.Dpassword){
+      userType= "Recipient"
+    }
+    
+
+
+    const sql = 'INSERT INTO profilerequests (Id,name, username, email, gender, weight, blood_type, userType) VALUES (?,?, ?, ?, ?, ?, ?,?)';
+
+    db.query(sql, [Id, name, username, email, gender, weight, bloodType,userType], (err, result) => {
+        if (err) {
+            console.error('Error inserting data into profilerequests table:', err);
+            // Handle the error, send a response, etc.
+        } else {
+           res.send('We recieved your request to update your information');
+            // Process or send a response as needed
+        }
+    });
+    
   }else
   res.send("Not logged in")
 })

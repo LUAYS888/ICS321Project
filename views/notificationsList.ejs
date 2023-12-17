@@ -35,7 +35,8 @@
 
     <div style="margin-bottom: 30px;">
         <h1 style="display: inline;">Notifications</h1>
-        <!-- <a href="announcAdding.html" style="margin-left: 50px;">Add a new Notification</a> -->
+        <a href="acceptProfileRequest" style="margin-left: 50px;">accept a request</a>
+        <a href="rejectProfileRequest" style="margin-left: 50px;">reject a request</a>
     </div>
     
     <!-- <div id="search-container">
@@ -44,16 +45,26 @@
         <button onclick="search()">Go</button>
     </div> -->
     
-    <ul>
-        <li><h2><a href="">- Notification 1</a></h2></li>
-
-
-
-        <!-- <li><a href="#">Jane Smith</a></li>
-        <li><a href="#">David Johnson</a></li> -->
-        <!-- Add more donor names as needed -->
-    </ul>
-
+    <% if (requests.length) { %>
+        <% requests.forEach(innerArray => { %>
+            <% innerArray.forEach(user => { %>
+                <p>
+                    Id: <%= user.Id %>,
+                    Name: <%= user.name %>,
+                    Username: <%= user.username %>,
+                    Email: <%= user.email %>,
+                    Gender: <%= user.gender %>,
+                    Weight: <%= user.weight %>,
+                    Blood Type: <%= user.blood_type %>,
+                    UserType: <%= user.userType %>
+                </p>
+            <% }); %>
+        <% }); %>
+    
+    <% } else { %>
+        <!-- Code to execute if the condition is false -->
+        <p>No Notifications.</p>
+    <% } %>
 
     <script>
         function search() {

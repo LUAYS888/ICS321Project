@@ -34,56 +34,66 @@
 
     <div style="margin-bottom: 30px;">
         <h1 style="display: inline;">Donors List</h1>
-        <a href="donorAdding.html" style="margin-left: 50px;">Add a new donor</a>
     </div>
     
-    <div id="search-container">
-        <label for="search-input">Search:</label>
-        <input type="text" id="search-input" placeholder="Enter donor name">
-        <button onclick="search()">Go</button>
-    </div>
     
-    <ol id="donors-list">
-        <!-- <li><a href="#">John Doe</a></li>
-        <li><a href="#">Jane Smith</a></li>
-        <li><a href="#">David Johnson</a></li> -->
-        <!-- Add more donor names as needed -->
-
-
-    </ol>
+    
+    <% if (donors && donors.length > 0) { %>
+        <% donors.forEach(innerArray => { %>
+            <% innerArray.forEach(user => { %>
+                <p>
+                    Username: <%= user.Username %>,
+                    Id: <%= user.Id %>,
+                    First Name: <%= user.Fname %>,
+                    Last Name: <%= user.Lname %>,
+                    Phone: <%= user.Phone %>,
+                    Address: <%= user.Address %>,
+                    Birthdate: <%= user.Bdate %>,
+                    Email: <%= user.Email %>,
+                    Sex: <%= user.Sex %>,
+                    Weight: <%= user.Weight %>,
+                    Blood Type: <%= user.Blood_type %>
+                </p>
+                <hr>
+            <% }); %>
+        <% }); %>
+    <% } else { %>
+        <p>No donors available.</p>
+    <% } %>
+    
 
 
     <script>
-        function search() {
-            // Implement search logic here
-            alert('Searching...'); // Replace this with your search functionality
-        }
+        // function search() {
+        //     // Implement search logic here
+        //     alert('Searching...'); // Replace this with your search functionality
+        // }
 
-         // Fetch names from the server and update the HTML page
-         fetch('/fetchDonorsList')
-            .then(response => response.json())
-            .then(results => {
-                const donorsList = document.getElementById('donors-list');
-                results.forEach(result => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent ="(Fname:"+ result.Fname+")";
-                    listItem.textContent = listItem.textContent +"(Lname:"+ result.Lname+")"
-                    listItem.textContent += '(Username:'+ result.Username+")"
-                    listItem.textContent += '(Email:'+ result.email+")"
-                    listItem.textContent += '(Sex:'+ result.gender+")"
-                    listItem.textContent += '(BloodType:'+ result.bloodType+")"
-                    listItem.textContent += '(Phone:'+ result.phone+")"
-                    listItem.textContent += '(Address:'+ result.address+")"
-                    listItem.textContent += '(Birth:'+ result.birthDate+")"
-                    listItem.textContent += '(Weight:'+ result.weight+")"
+        //  // Fetch names from the server and update the HTML page
+        //  fetch('/fetchDonorsList')
+        //     .then(response => response.json())
+        //     .then(results => {
+        //         const donorsList = document.getElementById('donors-list');
+        //         results.forEach(result => {
+        //             const listItem = document.createElement('li');
+        //             listItem.textContent ="(Fname:"+ result.Fname+")";
+        //             listItem.textContent = listItem.textContent +"(Lname:"+ result.Lname+")"
+        //             listItem.textContent += '(Username:'+ result.Username+")"
+        //             listItem.textContent += '(Email:'+ result.email+")"
+        //             listItem.textContent += '(Sex:'+ result.gender+")"
+        //             listItem.textContent += '(BloodType:'+ result.bloodType+")"
+        //             listItem.textContent += '(Phone:'+ result.phone+")"
+        //             listItem.textContent += '(Address:'+ result.address+")"
+        //             listItem.textContent += '(Birth:'+ result.birthDate+")"
+        //             listItem.textContent += '(Weight:'+ result.weight+")"
                     
 
-                    donorsList.appendChild(listItem);
-                    donorsList.appendChild(document.createElement('hr'));
+        //             donorsList.appendChild(listItem);
+        //             donorsList.appendChild(document.createElement('hr'));
 
-                });
-            })
-            .catch(error => console.error('Error fetching names:', error));
+        //         });
+        //     })
+        //     .catch(error => console.error('Error fetching names:', error));
 
 
 

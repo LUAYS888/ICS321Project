@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+            color: green;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="margin-bottom: 30px;">
+        <h1 style="display: inline;">Requests</h1>
+        <a href="markAsCompletedRec" style="margin-left: 50px;">Mark a Request as Completed</a>
+        <a href="markAsRejectedRec" style="margin-left: 50px;">Mark a Request as Rejected</a>  <!--Admin Rejecte Rec Request -->
+    </div>
+    
+    <!-- <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" placeholder="Enter donor name">
+        <button onclick="search()">Go</button>
+    </div> -->
+    
+    <h1>Pending Requests (Want Blood): </h1>
+    <% if (reqResult && reqResult.length > 0) { %>
+        <% reqResult.forEach(innerArray => { %>
+            <% innerArray.forEach(data => { %>
+                <% if (data.Rstatus === 'Pending') { %>
+                    <p>
+                       
+                        Rid: <%= data.Rid %>,
+                        Blood Type: <%= data.Blood_type %>,
+                        Emergency: <%= data.emergency %>
+                    </p>
+                <% } %>
+            <% }); %>
+        <% }); %>
+    <% } else { %>
+        <p>No Requests.</p>
+    <% } %>
+
+    <h1>Completed Requests (Want Blood): </h1>
+    <% if (reqResult && reqResult.length > 0) { %>
+        <% reqResult.forEach(innerArray => { %>
+            <% innerArray.forEach(data => { %>
+                <% if (data.Rstatus === 'Completed') { %>
+                    <p>
+                       
+                        Rid: <%= data.Rid %>,
+                        Blood Type: <%= data.Blood_type %>,
+                        Emergency: <%= data.emergency %>
+                    </p>
+                <% } %>
+            <% }); %>
+        <% }); %>
+    <% } else { %>
+        <p>No Requests.</p>
+    <% } %>
+
+
+    <h1>Rejected Requests (Want Blood): </h1>
+    <% if (reqResult && reqResult.length > 0) { %>
+        <% reqResult.forEach(innerArray => { %>
+            <% innerArray.forEach(data => { %>
+                <% if (data.Rstatus === 'Rejected') { %>
+                    <p>
+                       
+                        Rid: <%= data.Rid %>,
+                        Blood Type: <%= data.Blood_type %>,
+                        Emergency: <%= data.emergency %>
+                    </p>
+                <% } %>
+            <% }); %>
+        <% }); %>
+    <% } else { %>
+        <p>No Requests.</p>
+    <% } %>
+
+
+
+    <script>
+        function search() {
+            // Implement search logic here
+            alert('Searching...'); // Replace this with your search functionality
+        }
+    </script>
+</body>
+</html>

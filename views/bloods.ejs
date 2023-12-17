@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor List</title>
+    <title>Blood List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,14 +34,14 @@
 <body>
 
     <div style="margin-bottom: 30px;">
-        <h1 style="display: inline;">Announcements</h1>
-        <% if (announceWithCred[0].Spassword) { %>
+        <h1 style="display: inline;">Bloods</h1>
+       
             
-            <a href="announcAdding" style="margin-left: 50px;">Add a new announcement</a>
-        <% } else { %>
+            <a href="bloodAdding" style="margin-left: 50px;">Add a new Blood</a>
+      
            
            
-        <% } %>
+     
     </div>
     
     <!-- <div id="search-container">
@@ -50,27 +50,21 @@
         <button onclick="search()">Go</button>
     </div> -->
     
-    <% announceWithCred[1].forEach(innerArray => { %>
-        <% innerArray.forEach(rowData => { %>
-            <% if (rowData) { %>
+    <% if (bloods && bloods.length > 0) { %>
+        <% bloods.forEach(innerArray => { %>
+            <% innerArray.forEach(blood => { %>
                 <p>
-                    Staff id: <%= rowData.Sid %>,
-                    Content: <%= rowData.text %>,
-                    Status: <%= rowData.status %>
+                    Type: <%= blood.Type %>,
+                    Blood Id: <%= blood.Bid %>,
+                    Expiration Date: <%= blood.Expiration_date %>,
+                    Blood Status: <%= blood.Bstatus %>
                 </p>
-            <% } else { %>
-                <!-- Handle the case where rowData is undefined -->
-                <p>Undefined RowDataPacket</p>
-            <% } %>
+            <% }); %>
         <% }); %>
-    <% }); %>
+    <% } else { %>
+        <p></p>
+    <% } %>
 
-
-    <script>
-        function search() {
-            // Implement search logic here
-            alert('Searching...'); // Replace this with your search functionality
-        }
-    </script>
+    
 </body>
 </html>

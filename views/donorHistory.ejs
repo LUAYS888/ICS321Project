@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <style>
+        /* body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+            color: green;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        } */
+    </style>
+</head>
+<body>
+
+    <!-- <div style="margin-bottom: 30px;">
+        <h1 style="display: inline;">Donations</h1>
+    </div> -->
+    
+    <!-- <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" placeholder="Enter donor name">
+        <button onclick="search()">Go</button>
+    </div> -->
+    
+    <h1>History: </h1>
+    
+    <% history.forEach(innerArray => { %>
+        <% innerArray.forEach(rowData => { %>
+            <% if (rowData) { %>
+                <p>
+                    Staff id: <%= rowData.Sid %>,
+                    Status: <%= rowData.Rstatus %>,
+                    Date: <%= rowData.prefDate %>
+                </p>
+            <% } else { %>
+                <!-- Handle the case where rowData is undefined -->
+                <p>Undefined RowDataPacket</p>
+            <% } %>
+        <% }); %>
+    <% }); %>
+
+
+    
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+            color: green;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="margin-bottom: 30px;">
+        <h1 style="display: inline;">Requests</h1>
+        <a href="markAsCompleted" style="margin-left: 50px;">Mark a Request as Completed</a>
+    </div>
+    
+    <!-- <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" placeholder="Enter donor name">
+        <button onclick="search()">Go</button>
+    </div> -->
+    
+    <h1>Pending Requests (Want To Donate): </h1>
+    <% if (pendedResult.length > 0) { %>
+        <% pendedResult.forEach(innerArray => { %>
+            <% innerArray.forEach(obj => { %>
+                <% if (obj.Rstatus === "Pending") { %>
+                    <p>
+                        Donor ID: <%= obj.Did %>,
+                        Blood Type: <%= obj.Blood_type %>,
+                        Preferred Date: <%= obj.prefDate %>
+                    </p>
+                <% } else { %>
+                    <!-- Code to execute if Rstatus is not "Pending" -->
+                <% } %>
+            <% }); %>
+        <% }); %>
+    <% } else { %>
+        <p>No Donors</p>
+    <% } %>
+
+
+    <h1>Completed Requests (Want To Donate): </h1>
+    <% if (pendedResult.length > 0) { %>
+        <% pendedResult.forEach(innerArray => { %>
+            <% innerArray.forEach(obj => { %>
+                <% if (obj.Rstatus === "Completed") { %>
+                    <p>
+                        Donor ID: <%= obj.Did %>,
+                        Blood Type: <%= obj.Blood_type %>,
+                        Preferred Date: <%= obj.prefDate %>
+                    </p>
+                <% } else { %>
+                    <!-- Code to execute if Rstatus is not "Pending" -->
+                <% } %>
+            <% }); %>
+        <% }); %>
+    <% } else { %>
+        <p>No Donors</p>
+    <% } %>
+
+
+
+    <script>
+        function search() {
+            // Implement search logic here
+            alert('Searching...'); // Replace this with your search functionality
+        }
+    </script>
+</body>
+</html>

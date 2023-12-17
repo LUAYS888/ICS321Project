@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+    <style>
+        #form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #checkboxs div label{
+            display: inline-block;
+            width: 150px; /* Adjust the width as needed */
+            margin-right: 10px; /* Adjust the right margin as needed */
+        }
+
+        #checkboxs div input {
+            display: inline-block;
+            width: 300px; /* Adjust the width as needed */
+            padding: 5px; /* Adjust the padding as needed */
+            margin-top: -20px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-bottom: 100px;">Register a new recipient</h1>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div id="form">
+        <form action="" method="post">
+            <lable for="FnameInput">First Name</lable>
+            <input type="text" id="FnameInput"  placeholder="First Name" required />
+    
+            <lable for="LnameInput">Last Name</lable>
+            <input type="text" id="LnameInput"  placeholder="Last Name" required />
+
+            <lable for="genderInput">Gender</lable>
+            <input type="text" id="genderInput"  placeholder="Gender" required list="GenderList" />
+            <datalist id="GenderList">
+    
+                <option value="Male"></option>
+                <option value="Female"></option>
+                
+                
+            </datalist>
+    
+            <lable for="AddressInput">Address</lable>
+            <input type="text" id="AddressInput"  placeholder="Address" required />
+    
+            <lable for="emailInput">Email</lable>
+            <input type="email" id="emailInput"  placeholder="Luay@gmail.com" required />
+
+            <lable for="PhoneInput">Phone</lable>
+            <input type="number" id="PhoneInput"  placeholder="+966" required />
+
+            <lable for="BirthInput">Birth Date</lable>
+            <input type="text" id="BirthInput"  placeholder="dd/mm/yyyy" required />
+
+            <lable for="weightInput">Weight</lable>
+            <input type="number" id="weightInput"  placeholder="KG" required />
+
+
+            <lable style="margin-bottom: 30px;">Diseases:</lable>
+            <br>    
+            <div id="checkboxs" style="margin-top: 30px;">
+                <div>
+                    <label for="NoD" >No Disease</label>
+                    <input type="checkbox" name="" id="NoD" />
+                    
+                </div>
+        
+                <div>
+                    <label for="">Diabetes</label>
+                    <input type="checkbox" name="" id="" />
+                    
+                </div>
+        
+                <div>
+                    <label for="">High Pressure</label>
+                    <input type="checkbox" name="" id="" />
+                    
+                </div>
+    
+                <div>
+                    <label for="">Another</label>
+                    <input type="checkbox" name="" id="" />
+                    
+                </div>
+            </div>
+    
+            
+    
+            
+    
+            <input type="submit"/>
+            <input type="reset">
+    
+    
+        </form>
+    </div>
+</body>
+</html>

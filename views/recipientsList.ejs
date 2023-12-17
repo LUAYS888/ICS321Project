@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- <h1>Recipients List</h1> -->
+
+    <div style="margin-bottom: 30px;">
+        <h1 style="display: inline;">Recipients List</h1>
+        <a href="recipientAdding.html" style="margin-left: 50px;">Add a new Recipient</a>
+    </div>
+
+
+
+    <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" placeholder="Enter recipient name">
+        <button onclick="search()">Go</button>
+    </div>
+    
+    <ul>
+        <li><a href="#">John Doe</a></li>
+        <li><a href="#">Jane Smith</a></li>
+        <li><a href="#">David Johnson</a></li>
+        <!-- Add more donor names as needed -->
+    </ul>
+
+
+    <script>
+        function search() {
+            // Implement search logic here
+            alert('Searching...'); // Replace this with your search functionality
+        }
+    </script>
+</body>
+</html>

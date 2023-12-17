@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+        } */
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="margin-bottom: 30px;">
+        <h1 style="display: inline;">Donors List</h1>
+        <a href="donorAdding.html" style="margin-left: 50px;">Add a new donor</a>
+    </div>
+    
+    <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" placeholder="Enter donor name">
+        <button onclick="search()">Go</button>
+    </div>
+    
+    <ol id="donors-list">
+        <!-- <li><a href="#">John Doe</a></li>
+        <li><a href="#">Jane Smith</a></li>
+        <li><a href="#">David Johnson</a></li> -->
+        <!-- Add more donor names as needed -->
+
+
+    </ol>
+
+
+    <script>
+        function search() {
+            // Implement search logic here
+            alert('Searching...'); // Replace this with your search functionality
+        }
+
+         // Fetch names from the server and update the HTML page
+         fetch('/fetchDonorsList')
+            .then(response => response.json())
+            .then(results => {
+                const donorsList = document.getElementById('donors-list');
+                results.forEach(result => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent ="(Fname:"+ result.Fname+")";
+                    listItem.textContent = listItem.textContent +"(Lname:"+ result.Lname+")"
+                    listItem.textContent += '(Username:'+ result.Username+")"
+                    listItem.textContent += '(Email:'+ result.email+")"
+                    listItem.textContent += '(Sex:'+ result.gender+")"
+                    listItem.textContent += '(BloodType:'+ result.bloodType+")"
+                    listItem.textContent += '(Phone:'+ result.phone+")"
+                    listItem.textContent += '(Address:'+ result.address+")"
+                    listItem.textContent += '(Birth:'+ result.birthDate+")"
+                    listItem.textContent += '(Weight:'+ result.weight+")"
+                    
+
+                    donorsList.appendChild(listItem);
+                    donorsList.appendChild(document.createElement('hr'));
+
+                });
+            })
+            .catch(error => console.error('Error fetching names:', error));
+
+
+
+    </script>
+</body>
+</html>

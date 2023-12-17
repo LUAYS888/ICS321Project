@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodBank System</title>
+    <!-- <link rel="stylesheet" href="dark.css"> -->
+
+    <style>
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        form {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+</head>
+
+<body>
+    
+    <h1 style="text-align: center;">Welcome to BloodBank System</h1>
+
+    <div>
+        <form action="/login" method="post" id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+    
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <lable for="AsInput">As</lable>
+            <input type="text" id="AsInput"  placeholder="" name="userType"  required list="AsList" />
+            <datalist id="AsList">
+    
+                <option value="Administrator"></option>
+                <option value="Donor"></option>
+                <option value="Recipient"></option>
+                
+                
+            </datalist>
+    
+            <button type="submit">Login</button>
+           
+
+        </form>
+        <a href="register" style="display: block;">
+            <button style="background-color: gray;">Don't hava an account?</button>
+        </a>
+    </div>
+
+</body>
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = loginForm.querySelector('input[name="username"]').value;
+        const password = loginForm.querySelector('input[name="password"]').value;
+        const userType = loginForm.querySelector('input[name="userType"]').value;
+        const loader = document.getElementById('loader'); // Reference to the loader element
+        const errorMessageDiv = document.getElementById('errorMessage');
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ kfupmId, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Redirect to home page on successful login
+                window.location.href = '/';
+            } else {
+                // Display error message if login is unsuccessful
+                errorMessageDiv.textContent = result.message || 'Login failed. Please try again.';
+                errorMessageDiv.style.display = 'block';
+            }
+        } catch (error) {
+            // Hide the loader if there's an exception
+            loader.style.display = 'none';
+            // Display error message
+            errorMessageDiv.textContent = 'Login failed: ' + error.message;
+            errorMessageDiv.style.display = 'block';
+        }
+    });
+}); -->
+<!-- </script> -->
+</html>

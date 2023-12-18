@@ -104,7 +104,7 @@ app.post('/login', (req,res) =>{
             if (results.length > 0) {
               // Login successful
               req.session.user = results[0];
-              res.render("adminHome")
+              res.render("adminHome",{ user: req.session.user } )
               //res.sendFile(path.join(__dirname, '/adminHome'));
               
               //res.json({ success: true, message: 'Login successful' });
@@ -143,7 +143,7 @@ app.post('/login', (req,res) =>{
               //res.json({ success: true, message: 'Login successful' });
               req.session.user = results[0];
               // res.sendFile(path.join(__dirname, './views/donorHome.ejs'));
-              res.render("donorHome")
+              res.render("donorHome",{ user: req.session.user })
             } else {
               // Login failed
               res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -172,7 +172,7 @@ app.post('/login', (req,res) =>{
               // Login successful
               req.session.user = results[0];
               
-              res.render("donorHome")
+              res.render("donorHome",{ user: req.session.user })
               
             } else {
               // Login failed
@@ -927,7 +927,7 @@ app.use("/donationForm", function(req,res){
   res.send("Not logged in")
 })
 
-app.post("/donationFormPost", function(req,res){
+app.post("/donationFormPost", function(req,res){           //Donors To donate
   if (req.session.user) {
     const prefDate= req.body.donationDate 
     const sql = 'INSERT INTO d_request (Sid,Did,Blood_type,Rstatus,prefDate) VALUES (?,?, ?,?,?)';
